@@ -5,7 +5,7 @@ Earthquake Data Visualization &amp; Data from USGS
 You can view my project at
 https://edv.lksin.com/week.html
 
-Sources of data and Thanks❤️
+
 
 ## Sources of data and Thanks❤️
 
