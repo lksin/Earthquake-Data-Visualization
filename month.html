@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us" class="mdui-theme-light">
+<head>
+  <meta charset="UTF-8">
+  <title>🌐Earthquake Data Visualization</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/style.css">
+
+
+  <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+  <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <style>
+  body {
+    font-family: "Poppins";
+    font-size: 18px;
+  }
+  .flex-container {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+
+.flex-item {
+    margin: 5px;
+}
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="contained" style="position: relative; overflow: hidden;">
+<div style="flex-grow: -1"> 
+  <mdui-top-app-bar style="position: relative; overflow: hidden;">
+    <mdui-button-icon id="openDrawer" icon="menu"></mdui-button-icon>
+    <mdui-top-app-bar-title><b>🌐Earthquake Data Visualization(Monthly)</b></mdui-top-app-bar-title>
+    <div style="flex-grow: 1"></div>
+  </mdui-top-app-bar>
+</div>
+
+<div class="example-contained" style="position: relative; overflow: hidden">
+  <mdui-navigation-drawer id="earthquakeDrawer"  close-on-overlay-click>
+    <ul class="mdui-list">
+      <li class="mdui-list-item mdui-ripple" id="USGS">
+        <i class="mdui-list-item-icon mdui-icon material-icons">wifi_tethering</i>
+        <div class="mdui-list-item-content">USGS</div>
+      </li>
+      <li class="mdui-list-item mdui-ripple" id="star">
+        <i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+        <div class="mdui-list-item-content">Star my project</div>
+      </li>
+      <li class="mdui-list-item mdui-ripple" id="mail">
+        <i class="mdui-list-item-icon mdui-icon material-icons">send</i>
+        <div class="mdui-list-item-content">Contact Author</div>
+      </li>
+      <li class="mdui-list-item mdui-ripple" id="traw">
+        <i class="mdui-list-item-icon mdui-icon material-icons">drafts</i>
+        <div class="mdui-list-item-content">Raw Data(Monthly)</div>
+      </li>
+      <li class="mdui-subheader">Switching the time range of data</li>
+      <li class="mdui-list-item mdui-ripple" id="weekly">
+        <i class="mdui-list-item-icon mdui-icon material-icons">timelapse</i>
+        <div class="mdui-list-item-content">Weekly</div>
+      </li>
+      <li class="mdui-list-item mdui-list-item-active mdui-ripple" id="monthly">
+        <i class="mdui-list-item-icon mdui-icon material-icons">access_time</i>
+        <div class="mdui-list-item-content">Monthly</div>
+      </li>
+      <li class="mdui-list-item mdui-ripple" id="td">
+        <i class="mdui-list-item-icon mdui-icon material-icons">av_timer</i>
+        <div class="mdui-list-item-content">Daily(24h)</div>
+      </li>
+    </ul>
+  </mdui-navigation-drawer>
+</div>
+  <script>
+  var tUSGS = "https://earthexplorer.usgs.gov/";
+  var tstar = "https://github.com/lksin/Earthquake-Data-Visualization";
+  var tmail = "mailto:lksin@vip.qq.com";
+  var weekly = "week.html";
+  var monthly = "month.html";
+  var Daily = "day.html";
+  var rawd = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
+
+  document.getElementById("USGS").addEventListener("click", function() {
+  window.open(tUSGS);
+  });
+  document.getElementById("star").addEventListener("click", function() {
+  window.open(tstar);
+  });
+  document.getElementById("mail").addEventListener("click", function() {
+  window.open(tmail);
+  });
+  document.getElementById("traw").addEventListener("click", function() {
+  window.open(rawd);
+  });  
+  document.getElementById("weekly").addEventListener("click", function() {
+  window.open(weekly);
+  });
+  document.getElementById("monthly").addEventListener("click", function() {
+  window.open(monthly);
+  });
+  document.getElementById("td").addEventListener("click", function() {
+  window.open(Daily);
+  });
+
+  </script>
+
+  <script>
+    const navigationDrawer = document.getElementById("earthquakeDrawer");
+    const openButton = document.getElementById("openDrawer");
+    const cButton = document.getElementById("earthquakeDrawer");
+
+    openButton.addEventListener("click", () => {
+      navigationDrawer.open = !navigationDrawer.open;
+      
+    });
+    cButton.addEventListener("click", () => {
+      navigationDrawer.open = !navigationDrawer.open;
+    });
+  </script>
+
+
+  <mdui-card clickable style="width: 100%; height: 10%;margin:15px 15px;padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;">
+    <h2 id="tips-tricks">💡Tips &amp; Tricks</h2>
+    <ul>
+    <li>Use the mouse wheel to zoom in and out of the map.</li>
+    <li>Change map type by clicking on the button at the top right of the map, you can switch to more <b>specialized maps</b> (with contour lines, etc.) for a better experience.</li>
+    <li>If you are viewing this page on smart phone, click on the <b>Full Screen button </b> for a better experience.</li>
+    <li>After <b>clicking the menu bar button </b> at the top left, you can switch the time range of the data in the pop-up sidebar.</li>
+    <li>⚠️ When switching the timeframe to <b>monthly</b>, the map loads a lot of data! Please be patient and wait for the data to load.</li>
+    </ul>
+  
+  </mdui-card>
+
+  <!--  Map -->
+  <div style="display: flex;"> 
+    <mdui-card style="width: 70%;height: 100%;padding-top: 10px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;margin:15px 15px" >
+  <!--全屏-->
+  
+    <div style="display: flex;" class="flex-container">
+      <div class="flex-item"><p>Data from <span id="oneWeekAgoTime"></span> to <span id="currentTime"></span></p></div>
+      <div style="width: 50%;" class="flex-item"></div>
+      <div class="flex-item"><mdui-button id="fullscreen"><i class="mdui-icon material-icons" style="margin:2px">launch</i><h3 style="margin:2px">Full Screen</h3></mdui-button></div>
+      <script>
+      var a = "monthly_f.html";
+      document.getElementById("fullscreen").addEventListener("click", function() {
+      window.open(a);
+      });
+
+      </script>
+      <script>
+      var currentTime = new Date();
+      var oneWeekAgoTime = new Date();
+      oneWeekAgoTime.setDate(currentTime.getDate() - 30);
+
+      document.getElementById("currentTime").innerText = formatTime(currentTime);
+      document.getElementById("oneWeekAgoTime").innerText = formatTime(oneWeekAgoTime);
+
+      function formatTime(time) {
+        var year = time.getFullYear();
+        var month = padZero(time.getMonth() + 1);
+        var day = padZero(time.getDate());
+        var hours = padZero(time.getHours());
+        var minutes = padZero(time.getMinutes());
+        var seconds = padZero(time.getSeconds());
+
+        return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+      }
+
+        function padZero(number) {
+        return number < 10 ? '0' + number : number;
+      }
+        </script>
+    </div>
+  <!--选择-->
+  <div id="map" style="height: 800px; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;" ></div>
+  </mdui-card>
+  <mdui-card style="margin-left: auto;width: 30%;height: 20%;margin:15px 15px;padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;">
+  <h2>Earthquake just happened:(click to locate)</h2>
+
+    <div id="earthquakeInfo"></div>
+    <div id="earthquakeCount"></div>
+    
+  </mdui-card>
+
+  </div>
+
+  <mdui-card clickable style="width: 100%;height: 10%;margin:15px 15px;padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;">
+    <h2 id="sources-of-data-and-thanks">Sources of data and Thanks❤️</h2>
+    <ul>
+    <li>Real-time earthquake data from <a href="https://earthexplorer.usgs.gov/">USGS</a></li>
+    <li>Maps used from <a href="https://www.mapbox.com/">Mapbox</a> and <a href="https://carto.com/">CartoDB</a></li>
+    <li>World tectonic plates and boundaries from <a href="https://github.com/fraxen/tectonicplates">fraxen</a></li>
+    <li>Exterior design from <a href="https://www.mdui.org/">Mudi.ui</a></li>
+    <li>Map framework using the <a href="https://leafletjs.com/">Leaflet.js</a> library</li>
+    <li>Data visualization using <a href="https://d3js.org/">D3.js</a> library</li>
+    </ul>
+  </mdui-card>
+
+
+
+  <!-- d3 JavaScript -->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- JS -->
+  <script type="text/javascript" src="static/js/monthly.js"></script>
+</body>
+</html>
